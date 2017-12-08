@@ -123,8 +123,6 @@ public class JDBCExample {
 			db.listArtists();
 			System.out.printf("%d: %s\n", 2, db.getNameById(2));
 			System.out.printf("%d: %s\n", 7, db.getNameById(7));
-			db.close();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
