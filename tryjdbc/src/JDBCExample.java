@@ -1,51 +1,142 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-public class JDBCExample
-{
+public class JDBCExample {
 
-  public static void main(String[] argv)
-  {
+	static class MusicDb {
+		private Connection connection;
+		private PreparedStatement insertArtistStatement;
+		private PreparedStatement nameByIdStatement;
 
-    System.out.println("-------- MySQL JDBC Connection Testing ------------");
+		static {
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+			} catch (ClassNotFoundException e) {
+				System.out.println("JDBC driver not found");
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
 
-    try
-    {
-      Class.forName("com.mysql.jdbc.Driver");
-    }
-    catch (ClassNotFoundException e)
-    {
-      System.out.println("Where is your MySQL JDBC Driver?");
-      e.printStackTrace();
-      return;
-    }
+		public MusicDb() throws SQLException {
+			String url = "jdbc:mysql://localhost:3306/test?useSSL=false";
+			try {
+				connection = DriverManager.getConnection(url, "root", "xingbin");
+			} catch (SQLException e) {
+				System.out.println("Cannot connect to " + url);
+				throw e;
+			}
+		}
 
-    System.out.println("MySQL JDBC Driver Registered!");
-    Connection connection = null;
+		public void close() throws SQLException {
+			if (insertArtistStatement != null) {
+				insertArtistStatement.close();
+			}
+			if (nameByIdStatement != null) {
+				nameByIdStatement.close();
+			}
+			connection.close();
+		}
 
-    try
-    {
-      connection = DriverManager
-          .getConnection("jdbc:mysql://10.192.5.126:3306/employees?useSSL=false", "root", "xingbin");
-      // .getConnection("jdbc:mysql://localhost/feedback",
-      // "sqluser", "xingbin");
+		public void createTable() throws SQLException {
+			Statement s = connection.createStatement();
+			s.execute("DROP TABLE IF EXISTS artist");
+			System.out.println("Drop table artist successfully");
+			s.execute("CREATE TABLE artist (" + "id SMALLINT(5) NOT NULL AUTO_INCREMENT," + "name CHAR(20) NOT NULL,"
+					+ "PRIMARY KEY (id)," + "KEY by_name (name))");
+			System.out.println("Table artist is created successfully");
+			s.close();
+		}
 
-    }
-    catch (SQLException e)
-    {
-      System.out.println("Connection Failed! Check output console");
-      e.printStackTrace();
-      return;
-    }
+		public void insertArtist(String name) throws SQLException {
+			if (insertArtistStatement == null) {
+				insertArtistStatement = connection.prepareStatement("INSERT INTO artist (name) VALUES (?)");
+			}
+			insertArtistStatement.setString(1, name);
+			insertArtistStatement.executeUpdate();
+			System.out.printf("%s are inserted successfully\n", name);
+		}
+		
+		public void insertArtists(List<String> names) throws SQLException {
+			StringBuffer sql = new StringBuffer();
+			sql.append("INSERT INTO artist (name) VALUES");
+			for (int i = 0; i < names.size(); i ++) {
+				sql.append("(?),");
+			}
+			sql.deleteCharAt(sql.length() - 1);
+			PreparedStatement s = connection.prepareStatement(sql.toString());
+			for (int i = 1; i <= names.size(); i ++) {
+				s.setString(i, names.get(i - 1));
+			}
+			s.executeUpdate();
+			System.out.println("Artists are inserted successfully");
+			s.close();
+		}
+		
+		public void listArtists() throws SQLException {
+			Statement s = connection.createStatement();
+			ResultSet results = s.executeQuery("SELECT * FROM artist ORDER BY id");
+			System.out.printf("%-10s  %s\n", "ID", "NAME");
+			System.out.printf("%-10s  %s\n", "--", "----");		
+			while (results.next()) {
+				String id = results.getString("id");
+				String name = results.getString("name");
+				System.out.printf("%-10s  %s\n", id, name);
+			}
+			s.close();
+		}
+		
+		public boolean search(String name) throws SQLException {
+			return false;
+		}
+		
+		public String getNameById(int id) throws SQLException {
+			PreparedStatement s = connection.prepareStatement("SELECT name FROM artist WHERE id = ?");
+			s.setInt(1, id);
+			ResultSet ret = s.executeQuery();
+			if (ret.next()) {
+				return ret.getString("name");
+			}
+			return null;
+		}
+	}
 
-    if (connection != null)
-    {
-      System.out.println("You made it, take control your database now!");
-    }
-    else
-    {
-      System.out.println("Failed to make connection!");
-    }
-  }
+	public static void main(String[] argv) {
+		MusicDb db = null;
+		try {
+			db = new MusicDb();
+			db.createTable();
+			db.insertArtist("John");
+			db.insertArtist("Tom");
+			List<String> artists = new ArrayList<String>();
+			artists.add("Jim");
+			artists.add("Suzy");
+			artists.add("Richard");
+			db.insertArtists(artists);
+			System.out.println();
+			db.listArtists();
+			System.out.printf("%d: %s\n", 2, db.getNameById(2));
+			System.out.printf("%d: %s\n", 7, db.getNameById(7));
+			db.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} finally {
+			if (db != null) {
+				try {
+					db.close();
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+			}
+		}
+
+	}
 }
