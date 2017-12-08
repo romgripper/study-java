@@ -1,1 +1,1 @@
-# This repo record the source codes during my Java study
+# This repo records the source codes during my Java study
