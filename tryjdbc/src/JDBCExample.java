@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -89,12 +90,25 @@ public class JDBCExample {
 		public void listArtists() {
 			try (Statement s = connection.createStatement()) {
 				ResultSet results = s.executeQuery("SELECT * FROM artist ORDER BY id");
-				System.out.printf("%-10s  %s\n", "ID", "NAME");
-				System.out.printf("%-10s  %s\n", "--", "----");
+				ResultSetMetaData meta = results.getMetaData();
+				List<String> labels = new ArrayList<>();
+				List<Integer> sizes = new ArrayList<>();
+				int columns = meta.getColumnCount();
+				for (int i = 1; i <= columns; i++) {
+					String lable = meta.getColumnLabel(i);
+					labels.add(lable);
+					int size = meta.getColumnDisplaySize(i);
+					sizes.add(size);
+					System.out.printf("%-" + size + "s", lable);
+				}
+				System.out.println();
+
 				while (results.next()) {
-					String id = results.getString("id");
-					String name = results.getString("name");
-					System.out.printf("%-10s  %s\n", id, name);
+					for (int i = 1; i <= columns; i++) {
+						String display = results.getString(i);
+						System.out.printf("%-" + sizes.get(i - 1) + "s", display);
+					}
+					System.out.println();
 				}
 			} catch (SQLException e) {
 				printException(e);
@@ -124,7 +138,7 @@ public class JDBCExample {
 			db.createTable();
 			db.insertArtist("John");
 			db.insertArtist("Tom");
-			List<String> artists = new ArrayList<String>();
+			List<String> artists = new ArrayList<>();
 			artists.add("Jim");
 			artists.add("Suzy");
 			artists.add("Richard");
