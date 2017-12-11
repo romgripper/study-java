@@ -6,6 +6,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class JDBCExample {
@@ -53,7 +54,7 @@ public class JDBCExample {
 				System.out.println("Drop table artist successfully");
 				s.execute("CREATE TABLE artist ("
 						+ "id SMALLINT(5) NOT NULL AUTO_INCREMENT,"
-						+ "name CHAR(20) NOT NULL,"
+						+ "name CHAR(20) UNIQUE NOT NULL,"
 						+ "PRIMARY KEY (id),"
 						+ "KEY by_name (name))");
 				System.out.println("Table artist is created successfully");
@@ -85,13 +86,20 @@ public class JDBCExample {
 					s.setString(i, names.get(i - 1));
 				}
 				int count = s.executeUpdate();
-				System.out.printf("%d artists are inserted successfully", count);
+				System.out.printf("%d artists are inserted successfully\n", count);
+				/*
+				 * if (count == names.size()) {
+				 * System.out.printf("%d artists are inserted successfully\n", count); } else {
+				 * System.out.printf("Only %d of %d artists are inserted\n", count,
+				 * names.size()); }
+				 */
 			} catch (SQLException e) {
 				printException(e);
 			}
 		}
 
 		public void listArtists() {
+			System.out.println("Artist list:");
 			try (Statement s = connection.createStatement()) {
 				ResultSet results = s.executeQuery("SELECT * FROM artist ORDER BY id");
 				ResultSetMetaData meta = results.getMetaData();
@@ -154,13 +162,18 @@ public class JDBCExample {
 			db.createTable();
 			db.insertArtist("John");
 			db.insertArtist("Tom");
-			List<String> artists = new ArrayList<>();
-			artists.add("Jim");
-			artists.add("Suzy");
-			artists.add("Richard");
-			db.insertArtists(artists);
-			System.out.println();
+			/*
+			 * List<String> artists = new ArrayList<>(); artists.add("Jim");
+			 * artists.add("Suzy"); artists.add("Richard");
+			 */
+			String[] artists = { "Jim", "Suzy", "Richard" };
+			db.insertArtists(Arrays.asList(artists));
 			db.listArtists();
+			/*
+			 * String[] artists1 = { "Jim", "Richard", "Tom" };
+			 * db.insertArtists(Arrays.asList(artists1)); System.out.println();
+			 * db.listArtists();
+			 */
 			System.out.printf("%d: %s\n", 2, db.getNameById(2));
 			System.out.printf("%d: %s\n", 7, db.getNameById(7));
 			String found = (db.search("Richard") ? "Found:" : "Not found:") + " Richard";
