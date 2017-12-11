@@ -51,8 +51,11 @@ public class JDBCExample {
 			try (Statement s = connection.createStatement()) {
 				s.execute("DROP TABLE IF EXISTS artist");
 				System.out.println("Drop table artist successfully");
-				s.execute("CREATE TABLE artist (" + "id SMALLINT(5) NOT NULL AUTO_INCREMENT,"
-						+ "name CHAR(20) NOT NULL," + "PRIMARY KEY (id)," + "KEY by_name (name))");
+				s.execute("CREATE TABLE artist ("
+						+ "id SMALLINT(5) NOT NULL AUTO_INCREMENT,"
+						+ "name CHAR(20) NOT NULL,"
+						+ "PRIMARY KEY (id),"
+						+ "KEY by_name (name))");
 				System.out.println("Table artist is created successfully");
 			} catch (SQLException e) {
 				printException(e);
@@ -60,7 +63,8 @@ public class JDBCExample {
 		}
 
 		public void insertArtist(String name) {
-			try (PreparedStatement s = connection.prepareStatement("INSERT INTO artist (name) VALUES (?)")) {
+			String sql = "INSERT INTO artist (name) VALUES (?)";
+			try (PreparedStatement s = connection.prepareStatement(sql)) {
 				s.setString(1, name);
 				s.executeUpdate();
 			} catch (SQLException e) {
@@ -116,11 +120,23 @@ public class JDBCExample {
 		}
 
 		public boolean search(String name) {
+			String sql = "SELECT * FROM artist WHERE name=?";
+			try (PreparedStatement s = connection.prepareStatement(sql)) {
+				s.setString(1, name);
+				ResultSet ret = s.executeQuery();
+				if (ret.next()) {
+					return true;
+				}
+
+			} catch (SQLException e) {
+				printException(e);
+			}
 			return false;
 		}
 
 		public String getNameById(int id) {
-			try (PreparedStatement s = connection.prepareStatement("SELECT name FROM artist WHERE id = ?")) {
+			String sql = "SELECT name FROM artist WHERE id = ?";
+			try (PreparedStatement s = connection.prepareStatement(sql)) {
 				s.setInt(1, id);
 				ResultSet ret = s.executeQuery();
 				if (ret.next()) {
@@ -147,6 +163,10 @@ public class JDBCExample {
 			db.listArtists();
 			System.out.printf("%d: %s\n", 2, db.getNameById(2));
 			System.out.printf("%d: %s\n", 7, db.getNameById(7));
+			String found = (db.search("Richard") ? "Found:" : "Not found:") + " Richard";
+			System.out.println(found);
+			found = (db.search("Jason") ? "Found:" : "Not found:") + " Jason";
+			System.out.println(found);
 		} catch (SQLException e) {
 			printException(e);
 			System.exit(1);
