@@ -84,8 +84,8 @@ public class JDBCExample {
 				for (int i = 1; i <= names.size(); i++) {
 					s.setString(i, names.get(i - 1));
 				}
-				s.executeUpdate();
-				System.out.println("Artists are inserted successfully");
+				int count = s.executeUpdate();
+				System.out.printf("%d artists are inserted successfully", count);
 			} catch (SQLException e) {
 				printException(e);
 			}
