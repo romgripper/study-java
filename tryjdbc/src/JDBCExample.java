@@ -74,6 +74,17 @@ public class JDBCExample {
 			System.out.printf("%s are inserted successfully\n", name);
 		}
 
+		public void removeArtist(String name) {
+			String sql = "DELETE FROM artist WHERE name=?";
+			try (PreparedStatement s = connection.prepareStatement(sql)) {
+				s.setString(1, name);
+				int deleted = s.executeUpdate();
+				System.out.printf("%s artist(s) is deleted\n", deleted);
+			} catch (SQLException e) {
+				printException(e);
+			}
+		}
+
 		public void insertArtists(List<String> names) {
 			StringBuffer sql = new StringBuffer();
 			sql.append("INSERT INTO artist (name) VALUES");
@@ -85,8 +96,8 @@ public class JDBCExample {
 				for (int i = 1; i <= names.size(); i++) {
 					s.setString(i, names.get(i - 1));
 				}
-				int count = s.executeUpdate();
-				System.out.printf("%d artists are inserted successfully\n", count);
+				int inserted = s.executeUpdate();
+				System.out.printf("%d artists are inserted successfully\n", inserted);
 				/*
 				 * if (count == names.size()) {
 				 * System.out.printf("%d artists are inserted successfully\n", count); } else {
@@ -179,6 +190,9 @@ public class JDBCExample {
 			String found = (db.search("Richard") ? "Found:" : "Not found:") + " Richard";
 			System.out.println(found);
 			found = (db.search("Jason") ? "Found:" : "Not found:") + " Jason";
+			System.out.println(found);
+			db.removeArtist("Richard");
+			found = (db.search("Richard") ? "Found:" : "Not found:") + " Richard";
 			System.out.println(found);
 		} catch (SQLException e) {
 			printException(e);
