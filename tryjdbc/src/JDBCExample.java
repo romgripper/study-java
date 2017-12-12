@@ -1,3 +1,4 @@
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -43,6 +44,8 @@ public class JDBCExample {
 				System.out.println("Cannot connect to " + DB_CONNECTION);
 				throw e;
 			}
+			createTable();
+			createProcedures();
 		}
 
 		@Override
@@ -51,7 +54,7 @@ public class JDBCExample {
 			connection.close();
 		}
 
-		public void createTable() {
+		private void createTable() {
 			try (Statement s = connection.createStatement()) {
 				s.execute("DROP TABLE IF EXISTS artist");
 				System.out.println("Drop table artist successfully");
@@ -62,6 +65,19 @@ public class JDBCExample {
 						+ "KEY by_name (name))");
 				System.out.println("Table artist is created successfully");
 			} catch (SQLException e) {
+				printException(e);
+			}
+		}
+
+		private void createProcedures() {
+			try (Statement s = connection.createStatement()) {
+				s.execute("DROP PROCEDURE IF EXISTS list_all");
+				System.out.println("Drop procedure list_all successfully");
+				s.execute("CREATE PROCEDURE list_all()"
+						+ "BEGIN "
+						+ "SELECT * FROM artist;"
+						+ "END");
+			} catch (Exception e) {
 				printException(e);
 			}
 		}
@@ -129,31 +145,45 @@ public class JDBCExample {
 		}
 
 		public void listArtists() {
-			System.out.println("Artist list:");
+			System.out.println("List artist:");
 			try (Statement s = connection.createStatement()) {
 				ResultSet results = s.executeQuery("SELECT * FROM artist ORDER BY id");
-				ResultSetMetaData meta = results.getMetaData();
-				List<String> labels = new ArrayList<>();
-				List<Integer> sizes = new ArrayList<>();
-				int columns = meta.getColumnCount();
-				for (int i = 1; i <= columns; i++) {
-					String lable = meta.getColumnLabel(i);
-					labels.add(lable);
-					int size = meta.getColumnDisplaySize(i);
-					sizes.add(size);
-					System.out.printf("%-" + size + "s", lable);
-				}
-				System.out.println();
-
-				while (results.next()) {
-					for (int i = 1; i <= columns; i++) {
-						String display = results.getString(i);
-						System.out.printf("%-" + sizes.get(i - 1) + "s", display);
-					}
-					System.out.println();
-				}
+				printResults(results);
 			} catch (SQLException e) {
 				printException(e);
+			}
+		}
+
+		public void listArtistsWithProcedure() {
+			System.out.println("List artist with procedure");
+			try (CallableStatement cs = connection.prepareCall("CALL list_all()")) {
+				ResultSet rs = cs.executeQuery();
+				printResults(rs);
+			} catch (SQLException e) {
+				printException(e);
+			}
+		}
+
+		private static void printResults(ResultSet results) throws SQLException {
+			ResultSetMetaData meta = results.getMetaData();
+			List<String> labels = new ArrayList<>();
+			List<Integer> sizes = new ArrayList<>();
+			int columns = meta.getColumnCount();
+			for (int i = 1; i <= columns; i++) {
+				String lable = meta.getColumnLabel(i);
+				labels.add(lable);
+				int size = meta.getColumnDisplaySize(i);
+				sizes.add(size);
+				System.out.printf("%-" + size + "s", lable);
+			}
+			System.out.println();
+
+			while (results.next()) {
+				for (int i = 1; i <= columns; i++) {
+					String display = results.getString(i);
+					System.out.printf("%-" + sizes.get(i - 1) + "s", display);
+				}
+				System.out.println();
 			}
 		}
 
@@ -193,7 +223,7 @@ public class JDBCExample {
 				ResultSet rs = s.executeQuery(sql);
 				rs.last();
 				int count = rs.getRow();
-				System.out.printf("There are %d artists in total", count);
+				System.out.printf("There are %d artists in total\n", count);
 				// rs.beforeFirst();
 				// while (rs.next()) {
 				rs.afterLast();
@@ -205,12 +235,10 @@ public class JDBCExample {
 				printException(e);
 			}
 		}
-
 	}
 
 	public static void main(String[] argv) {
 		try (MusicDb db = new MusicDb()) {
-			db.createTable();
 			db.insertArtist("John");
 			db.insertArtist("Tom");
 			/*
@@ -243,7 +271,7 @@ public class JDBCExample {
 			System.out.println(found);
 
 			db.increaseAllIdBy(100);
-			db.listArtists();
+			db.listArtistsWithProcedure();
 		} catch (SQLException e) {
 			printException(e);
 			System.exit(1);
