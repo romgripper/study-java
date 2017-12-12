@@ -10,6 +10,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class JDBCExample {
+	private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
+	private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/test?useSSL=false";
+	private static final String DB_USER = "root";
+	private static final String DB_PASSWORD = "xingbin";
 
 	private static void printException(Exception e) {
 		System.out.println(e.getMessage());
@@ -24,7 +28,7 @@ public class JDBCExample {
 
 		static {
 			try {
-				Class.forName("com.mysql.jdbc.Driver");
+				Class.forName(DB_DRIVER);
 			} catch (ClassNotFoundException e) {
 				System.out.println("JDBC driver not found");
 				printException(e);
@@ -33,11 +37,10 @@ public class JDBCExample {
 		}
 
 		public MusicDb() throws SQLException {
-			String url = "jdbc:mysql://localhost:3306/test?useSSL=false";
 			try {
-				connection = DriverManager.getConnection(url, "root", "xingbin");
+				connection = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
 			} catch (SQLException e) {
-				System.out.println("Cannot connect to " + url);
+				System.out.println("Cannot connect to " + DB_CONNECTION);
 				throw e;
 			}
 		}
@@ -65,9 +68,9 @@ public class JDBCExample {
 
 		public void insertArtist(String name) {
 			String sql = "INSERT INTO artist (name) VALUES (?)";
-			try (PreparedStatement s = connection.prepareStatement(sql)) {
-				s.setString(1, name);
-				s.executeUpdate();
+			try (PreparedStatement ps = connection.prepareStatement(sql)) {
+				ps.setString(1, name);
+				ps.executeUpdate();
 			} catch (SQLException e) {
 				printException(e);
 			}
@@ -76,9 +79,9 @@ public class JDBCExample {
 
 		public void removeArtist(String name) {
 			String sql = "DELETE FROM artist WHERE name=?";
-			try (PreparedStatement s = connection.prepareStatement(sql)) {
-				s.setString(1, name);
-				int deleted = s.executeUpdate();
+			try (PreparedStatement ps = connection.prepareStatement(sql)) {
+				ps.setString(1, name);
+				int deleted = ps.executeUpdate();
 				System.out.printf("%s artist(s) is deleted\n", deleted);
 			} catch (SQLException e) {
 				printException(e);
@@ -92,11 +95,11 @@ public class JDBCExample {
 				sql.append("(?),");
 			}
 			sql.deleteCharAt(sql.length() - 1);
-			try (PreparedStatement s = connection.prepareStatement(sql.toString())) {
+			try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
 				for (int i = 1; i <= names.size(); i++) {
-					s.setString(i, names.get(i - 1));
+					ps.setString(i, names.get(i - 1));
 				}
-				int inserted = s.executeUpdate();
+				int inserted = ps.executeUpdate();
 				System.out.printf("%d artists are inserted successfully\n", inserted);
 				/*
 				 * if (count == names.size()) {
@@ -104,6 +107,20 @@ public class JDBCExample {
 				 * System.out.printf("Only %d of %d artists are inserted\n", count,
 				 * names.size()); }
 				 */
+			} catch (SQLException e) {
+				printException(e);
+			}
+		}
+
+		public void insertArtistsBatch(List<String> names) {
+			String sql = "INSERT INTO artist (name) VALUES (?)";
+			try (PreparedStatement ps = connection.prepareStatement(sql)) {
+				for (String name : names) {
+					ps.setString(1, name);
+					ps.addBatch();
+				}
+				int[] inserted = ps.executeBatch();
+				System.out.printf("%d artists are batch-inserted successfully\n", inserted.length);
 			} catch (SQLException e) {
 				printException(e);
 			}
@@ -140,9 +157,9 @@ public class JDBCExample {
 
 		public boolean search(String name) {
 			String sql = "SELECT * FROM artist WHERE name=?";
-			try (PreparedStatement s = connection.prepareStatement(sql)) {
-				s.setString(1, name);
-				ResultSet ret = s.executeQuery();
+			try (PreparedStatement ps = connection.prepareStatement(sql)) {
+				ps.setString(1, name);
+				ResultSet ret = ps.executeQuery();
 				if (ret.next()) {
 					return true;
 				}
@@ -155,9 +172,9 @@ public class JDBCExample {
 
 		public String getNameById(int id) {
 			String sql = "SELECT name FROM artist WHERE id = ?";
-			try (PreparedStatement s = connection.prepareStatement(sql)) {
-				s.setInt(1, id);
-				ResultSet ret = s.executeQuery();
+			try (PreparedStatement ps = connection.prepareStatement(sql)) {
+				ps.setInt(1, id);
+				ResultSet ret = ps.executeQuery();
 				if (ret.next()) {
 					return ret.getString("name");
 				}
@@ -179,6 +196,10 @@ public class JDBCExample {
 			 */
 			String[] artists = { "Jim", "Suzy", "Richard" };
 			db.insertArtists(Arrays.asList(artists));
+			db.listArtists();
+
+			String[] artists1 = { "Jerry", "Hulk", "Allen" };
+			db.insertArtistsBatch(Arrays.asList(artists1));
 			db.listArtists();
 			/*
 			 * String[] artists1 = { "Jim", "Richard", "Tom" };
