@@ -183,6 +183,24 @@ public class JDBCExample {
 			}
 			return null;
 		}
+
+		public void increaseAllIdBy(int inc) {
+			String sql = "SELECT * FROM artist";
+			try (Statement s = connection.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+				ResultSet rs = s.executeQuery(sql);
+				rs.last();
+				int count = rs.getRow();
+				System.out.printf("There are %d artists in total", count);
+				rs.beforeFirst();
+				while (rs.next()) {
+					rs.updateInt("id", rs.getInt("id") + inc);
+					rs.updateRow();
+				}
+			} catch (SQLException e) {
+				printException(e);
+			}
+		}
 	}
 
 	public static void main(String[] argv) {
@@ -208,6 +226,7 @@ public class JDBCExample {
 			 */
 			System.out.printf("%d: %s\n", 2, db.getNameById(2));
 			System.out.printf("%d: %s\n", 7, db.getNameById(7));
+
 			String found = (db.search("Richard") ? "Found:" : "Not found:") + " Richard";
 			System.out.println(found);
 			found = (db.search("Jason") ? "Found:" : "Not found:") + " Jason";
@@ -215,6 +234,9 @@ public class JDBCExample {
 			db.removeArtist("Richard");
 			found = (db.search("Richard") ? "Found:" : "Not found:") + " Richard";
 			System.out.println(found);
+
+			db.increaseAllIdBy(100);
+			db.listArtists();
 		} catch (SQLException e) {
 			printException(e);
 			System.exit(1);
