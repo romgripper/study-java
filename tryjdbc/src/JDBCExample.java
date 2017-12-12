@@ -103,9 +103,11 @@ public class JDBCExample {
 				System.out.printf("%d artists are inserted successfully\n", inserted);
 				/*
 				 * if (count == names.size()) {
-				 * System.out.printf("%d artists are inserted successfully\n", count); } else {
+				 * System.out.printf("%d artists are inserted successfully\n", count);
+				 * } else {
 				 * System.out.printf("Only %d of %d artists are inserted\n", count,
-				 * names.size()); }
+				 * names.size());
+				 * }
 				 */
 			} catch (SQLException e) {
 				printException(e);
@@ -192,8 +194,10 @@ public class JDBCExample {
 				rs.last();
 				int count = rs.getRow();
 				System.out.printf("There are %d artists in total", count);
-				rs.beforeFirst();
-				while (rs.next()) {
+				// rs.beforeFirst();
+				// while (rs.next()) {
+				rs.afterLast();
+				while (rs.previous()) {
 					rs.updateInt("id", rs.getInt("id") + inc);
 					rs.updateRow();
 				}
@@ -201,6 +205,7 @@ public class JDBCExample {
 				printException(e);
 			}
 		}
+
 	}
 
 	public static void main(String[] argv) {
@@ -209,8 +214,10 @@ public class JDBCExample {
 			db.insertArtist("John");
 			db.insertArtist("Tom");
 			/*
-			 * List<String> artists = new ArrayList<>(); artists.add("Jim");
-			 * artists.add("Suzy"); artists.add("Richard");
+			 * List<String> artists = new ArrayList<>();
+			 * artists.add("Jim");
+			 * artists.add("Suzy");
+			 * artists.add("Richard");
 			 */
 			String[] artists = { "Jim", "Suzy", "Richard" };
 			db.insertArtists(Arrays.asList(artists));
@@ -221,7 +228,7 @@ public class JDBCExample {
 			db.listArtists();
 			/*
 			 * String[] artists1 = { "Jim", "Richard", "Tom" };
-			 * db.insertArtists(Arrays.asList(artists1)); System.out.println();
+			 * db.insertArtists(Arrays.asList(artists1));
 			 * db.listArtists();
 			 */
 			System.out.printf("%d: %s\n", 2, db.getNameById(2));
