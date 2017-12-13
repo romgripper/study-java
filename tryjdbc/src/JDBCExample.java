@@ -341,6 +341,9 @@ public class JDBCExample {
 
 			db.renameWithTransaction("Tom", "Thomas");
 			db.listArtistsWithProcedure();
+
+			db.renameWithTransaction("Jerry", "This is a very very very very very long name");
+			db.listArtistsWithProcedure();
 		} catch (SQLException e) {
 			printException(e);
 			System.exit(1);
