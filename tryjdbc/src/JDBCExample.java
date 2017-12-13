@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,6 +78,17 @@ public class JDBCExample {
 						+ "BEGIN "
 						+ "SELECT * FROM artist;"
 						+ "END");
+				System.out.println("Create procedure list_all successfully");
+
+				s.execute("DROP PROCEDURE IF EXISTS search");
+				System.out.println("Drop procedure search successfully");
+				s.execute("CREATE PROCEDURE search("
+						+ "IN in_id INT,"
+						+ "OUT out_name CHAR(10))" // If CHAR, Data truncation: Data too long for column 'out_name'
+						+ "BEGIN "
+						+ "SELECT name into out_name FROM artist WHERE id=in_id;"
+						+ "END");
+				System.out.println("Create procedure search successfully");
 			} catch (Exception e) {
 				printException(e);
 			}
@@ -159,7 +171,8 @@ public class JDBCExample {
 
 		public void listArtistsWithProcedure() {
 			System.out.println("List artist with procedure");
-			try (CallableStatement cs = connection.prepareCall("CALL list_all()")) {
+			String sql = "CALL list_all()";
+			try (CallableStatement cs = connection.prepareCall(sql)) {
 				ResultSet rs = cs.executeQuery();
 				printResults(rs);
 			} catch (SQLException e) {
@@ -206,17 +219,36 @@ public class JDBCExample {
 		}
 
 		public String getNameById(int id) {
-			String sql = "SELECT name FROM artist WHERE id = ?";
+			System.out.println("Get name by id");
+			String name = null;
+			String sql = "SELECT name FROM artist WHERE id=?";
 			try (PreparedStatement ps = connection.prepareStatement(sql)) {
 				ps.setInt(1, id);
 				ResultSet ret = ps.executeQuery();
 				if (ret.next()) {
-					return ret.getString("name");
+					name = ret.getString("name");
 				}
 			} catch (SQLException e) {
 				printException(e);
 			}
-			return null;
+			System.out.printf("%d : %s\n", id, name);
+			return name;
+		}
+
+		public String getNameByIdWithProcedure(int id) {
+			System.out.println("Get name by id with procedure");
+			String name = null;
+			String sql = "CALL search(?,?)";
+			try (CallableStatement cs = connection.prepareCall(sql)) {
+				cs.setInt(1, id);
+				cs.registerOutParameter(2, Types.CHAR);
+				cs.execute();
+				name = cs.getString(2);
+			} catch (SQLException e) {
+				printException(e);
+			}
+			System.out.printf("%d : %s\n", id, name);
+			return name;
 		}
 
 		public void increaseAllIdBy(int inc) {
@@ -262,8 +294,8 @@ public class JDBCExample {
 			 * db.insertArtists(Arrays.asList(artists1));
 			 * db.listArtists();
 			 */
-			System.out.printf("%d: %s\n", 2, db.getNameById(2));
-			System.out.printf("%d: %s\n", 7, db.getNameById(7));
+			db.getNameById(2);
+			db.getNameByIdWithProcedure(7);
 
 			String found = (db.search("Richard") ? "Found:" : "Not found:") + " Richard";
 			System.out.println(found);
