@@ -203,19 +203,25 @@ public class JDBCExample {
 			}
 		}
 
-		public boolean search(String name) {
-			String sql = "SELECT * FROM artist WHERE name=?";
+		public int search(String name) {
+			String sql = "SELECT id FROM artist WHERE name=?";
+			int id = -1;
 			try (PreparedStatement ps = connection.prepareStatement(sql)) {
 				ps.setString(1, name);
 				ResultSet ret = ps.executeQuery();
 				if (ret.next()) {
-					return true;
+					id = ret.getInt(1);
 				}
 
 			} catch (SQLException e) {
 				printException(e);
 			}
-			return false;
+			if (id > 0) {
+				System.out.printf("The id of %s is %d\n", name, id);
+			} else {
+				System.out.printf("%s not found\n", name);
+			}
+			return id;
 		}
 
 		public String getNameById(int id) {
@@ -270,6 +276,33 @@ public class JDBCExample {
 				printException(e);
 			}
 		}
+
+		public void renameWithTransaction(String oldName, String newName) {
+			int id = search(oldName);
+			if (id < 0) {
+				return;
+			}
+			String deleteSql = "DELETE FROM artist WHERE id=?";
+			String insertSql = "INSERT INTO artist VALUES (?,?)";
+			try (PreparedStatement deletePs = connection.prepareStatement(deleteSql);
+					PreparedStatement insertPs = connection.prepareStatement(insertSql)) {
+				connection.setAutoCommit(false);
+				deletePs.setInt(1, id);
+				deletePs.executeUpdate();
+				insertPs.setInt(1, id);
+				insertPs.setString(2, newName);
+				insertPs.executeUpdate();
+				connection.commit();
+				connection.setAutoCommit(true);
+			} catch (SQLException e) {
+				try {
+					connection.rollback();
+				} catch (SQLException ex) {
+					printException(ex);
+				}
+				printException(e);
+			}
+		}
 	}
 
 	public static void main(String[] argv) {
@@ -297,15 +330,16 @@ public class JDBCExample {
 			db.getNameById(2);
 			db.getNameByIdWithProcedure(7);
 
-			String found = (db.search("Richard") ? "Found:" : "Not found:") + " Richard";
-			System.out.println(found);
-			found = (db.search("Jason") ? "Found:" : "Not found:") + " Jason";
-			System.out.println(found);
+			db.search("Richard");
+			db.search("Jason");
+
 			db.removeArtist("Richard");
-			found = (db.search("Richard") ? "Found:" : "Not found:") + " Richard";
-			System.out.println(found);
+			db.search("Richard");
 
 			db.increaseAllIdBy(100);
+			db.listArtistsWithProcedure();
+
+			db.renameWithTransaction("Tom", "Thomas");
 			db.listArtistsWithProcedure();
 		} catch (SQLException e) {
 			printException(e);
