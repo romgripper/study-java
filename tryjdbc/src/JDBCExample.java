@@ -133,11 +133,14 @@ public class JDBCExample {
 		public void insertArtistsBatch(List<String> names) {
 			String sql = "INSERT INTO artist (name) VALUES (?)";
 			try (PreparedStatement ps = connection.prepareStatement(sql)) {
+				connection.setAutoCommit(false);
 				for (String name : names) {
 					ps.setString(1, name);
 					ps.addBatch();
 				}
 				int[] inserted = ps.executeBatch();
+				connection.commit();
+				connection.setAutoCommit(true);
 				System.out.printf("%d artists are batch-inserted successfully\n", inserted.length);
 			} catch (SQLException e) {
 				printException(e);
