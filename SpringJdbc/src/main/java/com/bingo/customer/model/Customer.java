@@ -37,6 +37,6 @@ public class Customer {
   }
 
   public String toString() {
-    return "cust_id: " + custId + "\nname: " + name + "\nage: " + age + "\n";
+    return "Customer [cust_id: " + custId + ", name: " + name + ", age: " + age + "]";
   }
 }
