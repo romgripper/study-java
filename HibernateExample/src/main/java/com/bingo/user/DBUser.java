@@ -2,6 +2,15 @@ package com.bingo.user;
 
 import java.util.Date;
 
+/* Entity class uses standard JavaBean naming conventions for property getter and setter methods,
+ * as well as private visibility for the fields. Although this is the recommended design, it is
+ * not required.
+ *
+ * The no-argument constructor, which is also a JavaBean convention, is a requirement for all
+ * persistent classes. Hibernate needs to create objects for you, using Java Reflection.
+ * The constructor can be private. However, package or public visibility is required for runtime
+ * proxy generation and efficient data retrieval without bytecode instrumentation.
+ */
 public class DBUser {
 
   private int userId;
@@ -17,6 +26,10 @@ public class DBUser {
     this.username = username;
     this.createdBy = createdBy;
     this.createdDate = createdDate;
+  }
+
+  public String toString() {
+    return "DBUser [" + userId + ", " + username + ", " + createdBy + ", " + createdDate + "]";
   }
 
   public int getUserId() {

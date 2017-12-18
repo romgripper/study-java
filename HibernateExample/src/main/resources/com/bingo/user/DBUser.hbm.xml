@@ -2,19 +2,28 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.bingo.user.DBUser" table="DBUSER">
-        <id name="userId" type="int">
-            <column name="USER_ID" precision="5" scale="0" />
-            <generator class="assigned" />
-        </id>
-        <property name="username" type="string">
-            <column name="USERNAME" length="20" not-null="true" />
-        </property>
-        <property name="createdBy" type="string">
-            <column name="CREATED_BY" length="20" not-null="true" />
-        </property>
-        <property name="createdDate" type="date">
-            <column name="CREATED_DATE" length="7" not-null="true" />
-        </property>
-    </class>
+  <!--  Hibernate determines the mapping type using reflection when the mapping 
+    files are processed. This process adds overhead in terms of time and resources. 
+    If startup performance is important, consider explicitly defining the type to use. 
+  -->
+	<class name="com.bingo.user.DBUser" table="DBUSER">
+		<id name="userId" type="int">
+			<column name="USER_ID" precision="5" scale="0" />
+			<generator class="assigned" />
+		</id>
+		<!-- In the absence of a column attribute, Hibernate uses the property 
+			name as the column name. This is appropriate for title, but since date is 
+			a reserved keyword in most databases, you need to specify a non-reserved 
+			word for the column name. 
+	  -->
+		<property name="username" type="string">
+			<column name="USERNAME" length="20" not-null="true" />
+		</property>
+		<property name="createdBy" type="string">
+			<column name="CREATED_BY" length="20" not-null="true" />
+		</property>
+		<property name="createdDate" type="date">
+			<column name="CREATED_DATE" length="7" not-null="true" />
+		</property>
+	</class>
 </hibernate-mapping>

@@ -11,6 +11,7 @@
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.pool_size">10</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <!-- Whether to print SQLs that hibernate uses -->
         <property name="show_sql">true</property>
         <mapping resource="com/bingo/user/DBUser.hbm.xml"></mapping>
     </session-factory>
