@@ -2,15 +2,15 @@ package com.bingo.user;
 
 import java.util.Date;
 
-/* Entity class uses standard JavaBean naming conventions for property getter and setter methods,
- * as well as private visibility for the fields. Although this is the recommended design, it is
- * not required.
- *
- * The no-argument constructor, which is also a JavaBean convention, is a requirement for all
- * persistent classes. Hibernate needs to create objects for you, using Java Reflection.
- * The constructor can be private. However, package or public visibility is required for runtime
- * proxy generation and efficient data retrieval without bytecode instrumentation.
- */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name = "DBUSER")
 public class DBUser {
 
   private int userId;
@@ -32,6 +32,8 @@ public class DBUser {
     return "DBUser [" + userId + ", " + username + ", " + createdBy + ", " + createdDate + "]";
   }
 
+  @Id
+  @Column(name = "USER_ID", unique = true, nullable = false, precision = 5, scale = 0)
   public int getUserId() {
     return userId;
   }
@@ -40,6 +42,7 @@ public class DBUser {
     this.userId = userId;
   }
 
+  @Column(name = "USERNAME", nullable = false, length = 20)
   public String getUsername() {
     return username;
   }
@@ -48,6 +51,7 @@ public class DBUser {
     this.username = username;
   }
 
+  @Column(name = "CREATED_BY", nullable = false, length = 20)
   public String getCreatedBy() {
     return createdBy;
   }
@@ -56,6 +60,8 @@ public class DBUser {
     this.createdBy = createdBy;
   }
 
+  @Temporal(TemporalType.DATE)
+  @Column(name = "CREATED_DATE", nullable = false, length = 7)
   public Date getCreatedDate() {
     return createdDate;
   }
