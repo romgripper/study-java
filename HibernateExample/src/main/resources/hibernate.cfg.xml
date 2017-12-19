@@ -13,6 +13,6 @@
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <!-- Whether to print SQLs that hibernate uses -->
         <property name="show_sql">true</property>
-        <mapping resource="com/bingo/user/DBUser.hbm.xml"></mapping>
+        <mapping class="com.bingo.user.DBUser"></mapping>
     </session-factory>
 </hibernate-configuration>
