@@ -1,29 +1,44 @@
 package com.bingo;
 
 import java.util.Date;
-import java.util.List;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
+import com.bingo.dao.DBUserDAO;
+import com.bingo.dao.impl.DBUserDAOImpl;
 import com.bingo.user.DBUser;
 import com.bingo.util.HibernateUtil;
 
 public class App {
   public static void main(String[] args) {
     System.out.println("Maven + Hibernate + MySQL");
-    try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+    DBUserDAO dao = new DBUserDAOImpl(HibernateUtil.getSessionFactory());
 
+    DBUser user = new DBUser(null, "superman", "system", new Date());
+    dao.insertUser(user);
+
+    System.out.println("The id of user newly inserted is " + user.getUserId());
+
+    dao.listUsers();
+
+    dao.deleteUser(user);
+
+    dao.listUsers();
+
+    System.out.println("DBUser with ID = 1: " + dao.findUserById(1));
+
+    /*try (Session session = HibernateUtil.getSessionFactory().openSession()) {
       //session.beginTransaction();
       Transaction transaction = session.beginTransaction();
-      DBUser user = new DBUser(100, "superman", "system", new Date());
+
+      user = new DBUser(null, "superman", "system", new Date());
       session.saveOrUpdate(user);
-      user = new DBUser(101, "superwoman", "system", new Date());
+      user = new DBUser(null, "superwoman", "system", new Date());
       session.saveOrUpdate(user);
-      user = new DBUser(102, "superson", "superwoman", new Date());
+      System.out.println(user);
+      user = new DBUser(null, "superson", "superwoman", new Date());
       session.saveOrUpdate(user);
-      user = new DBUser(103, "superdaughter", "superwoman", new Date());
+      user = new DBUser(null, "superdaughter", "superwoman", new Date());
       session.saveOrUpdate(user);
+      System.out.println(user);
       transaction.commit();
 
       transaction = session.beginTransaction();
@@ -40,10 +55,10 @@ public class App {
 
       //session.getTransaction().commit();
       transaction.commit();
-    } catch (Exception e) {
+    } catch (HibernateException e) {
+      e.printStackTrace();
       System.out.println(e.getMessage());
-    }
-
+    }*/
     HibernateUtil.shutdown();
   }
 }

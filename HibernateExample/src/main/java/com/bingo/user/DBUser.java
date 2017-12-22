@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -13,14 +15,14 @@ import javax.persistence.TemporalType;
 @Table(name = "DBUSER")
 public class DBUser {
 
-  private int userId;
+  private Integer userId;
   private String username;
   private String createdBy;
   private Date createdDate;
 
   public DBUser() {}
 
-  public DBUser(int userId, String username, String createdBy, Date createdDate) {
+  public DBUser(Integer userId, String username, String createdBy, Date createdDate) {
     super();
     this.userId = userId;
     this.username = username;
@@ -33,12 +35,13 @@ public class DBUser {
   }
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "USER_ID", unique = true, nullable = false, precision = 5, scale = 0)
-  public int getUserId() {
+  public Integer getUserId() {
     return userId;
   }
 
-  public void setUserId(int userId) {
+  public void setUserId(Integer userId) {
     this.userId = userId;
   }
 
