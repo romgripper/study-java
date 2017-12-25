@@ -5,6 +5,7 @@ import org.hibernate.cfg.Configuration;
 
 public class HibernateUtil {
 
+  // What takes time is to construct the session factory, so it is built once.
   private static final SessionFactory sessionFactory = buildSessionFactory();
 
   private static SessionFactory buildSessionFactory() {

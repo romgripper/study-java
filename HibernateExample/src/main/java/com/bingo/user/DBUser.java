@@ -12,8 +12,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "DBUSER")
+@Table(name = DBUser.TABLE)
 public class DBUser {
+
+  public static final String TABLE = "DBUSER";
+  public static final String COLUMN_ID = "USER_ID";
+  public static final String COLUMN_USERNAME = "USERNAME";
+  public static final String COLUMN_CREATED_BY = "CREATED_BY";
+  public static final String COLUMN_CREATED_DATE = "CREATED_DATE";
 
   private Integer userId;
   private String username;
@@ -36,7 +42,7 @@ public class DBUser {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "USER_ID", unique = true, nullable = false, precision = 5, scale = 0)
+  @Column(name = COLUMN_ID, unique = true, nullable = false, precision = 5, scale = 0)
   public Integer getUserId() {
     return userId;
   }
@@ -45,7 +51,7 @@ public class DBUser {
     this.userId = userId;
   }
 
-  @Column(name = "USERNAME", nullable = false, length = 20)
+  @Column(name = COLUMN_USERNAME, nullable = false, length = 20)
   public String getUsername() {
     return username;
   }
@@ -54,7 +60,7 @@ public class DBUser {
     this.username = username;
   }
 
-  @Column(name = "CREATED_BY", nullable = false, length = 20)
+  @Column(name = COLUMN_CREATED_BY, nullable = false, length = 20)
   public String getCreatedBy() {
     return createdBy;
   }
@@ -64,7 +70,7 @@ public class DBUser {
   }
 
   @Temporal(TemporalType.DATE)
-  @Column(name = "CREATED_DATE", nullable = false, length = 7)
+  @Column(name = COLUMN_CREATED_DATE, nullable = false, length = 7)
   public Date getCreatedDate() {
     return createdDate;
   }

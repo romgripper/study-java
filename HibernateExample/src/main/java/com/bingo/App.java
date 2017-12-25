@@ -14,16 +14,21 @@ public class App {
 
     DBUser user = new DBUser(null, "superman", "system", new Date());
     dao.insertUser(user);
-
-    System.out.println("The id of user newly inserted is " + user.getUserId());
-
+    user.setCreatedDate(new Date());
+    dao.insertUser(user);
+    user.setCreatedDate(new Date());
+    dao.insertOrUpdateUser(user);
+    dao.insertUser(new DBUser(null, "superwoman", "system", new Date()));
+    dao.insertUser(new DBUser(null, "superson", "superwoman", new Date()));
+    dao.insertUser(new DBUser(null, "superdaughter", "superwoman", new Date()));
     dao.listUsers();
 
-    dao.deleteUser(user);
-
+    dao.deleteUser(user.getUserId());
     dao.listUsers();
 
     System.out.println("DBUser with ID = 1: " + dao.findUserById(1));
+
+    dao.listUsersWithName("superwoman");
 
     /*try (Session session = HibernateUtil.getSessionFactory().openSession()) {
       //session.beginTransaction();

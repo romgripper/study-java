@@ -8,11 +8,15 @@ public interface DBUserDAO {
 
   boolean insertUser(DBUser user);
 
-  void deleteUser(DBUser user);
+  boolean insertOrUpdateUser(DBUser user);
 
-  void deleteUser(int id);
+  boolean deleteUser(DBUser user);
+
+  boolean deleteUser(int id);
 
   List<DBUser> listUsers();
+
+  List<DBUser> listUsersWithName(String name);
 
   DBUser findUserById(int id);
 }
