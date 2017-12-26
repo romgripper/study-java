@@ -1,5 +1,6 @@
 package com.bingo.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bingo.user.DBUser;
@@ -19,4 +20,6 @@ public interface DBUserDAO {
   List<DBUser> listUsersWithName(String name);
 
   DBUser findUserById(int id);
+
+  List<String> listUsernamesCreatedOn(Date date);
 }

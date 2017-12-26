@@ -1,5 +1,6 @@
 package com.bingo.user;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,7 +14,9 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = DBUser.TABLE)
-public class DBUser {
+public class DBUser implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   public static final String TABLE = "DBUSER";
   public static final String COLUMN_ID = "USER_ID";

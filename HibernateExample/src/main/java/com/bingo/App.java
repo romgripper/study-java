@@ -30,6 +30,8 @@ public class App {
 
     dao.listUsersWithName("superwoman");
 
+    dao.listUsernamesCreatedOn(new Date());
+
     /*try (Session session = HibernateUtil.getSessionFactory().openSession()) {
       //session.beginTransaction();
       Transaction transaction = session.beginTransaction();

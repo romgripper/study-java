@@ -1,10 +1,12 @@
 package com.bingo.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -146,5 +148,27 @@ public class DBUserDAOImpl implements DBUserDAO {
       System.out.println("Failed to list users: " + e.getMessage());
     }
     return users;
+  }
+
+  @Override
+  public List<String> listUsernamesCreatedOn(Date date) {
+    System.out.println("List user names created on " + date);
+
+    List<String> usernames = new ArrayList<>();
+    try (Session session = sessionFactory.openSession()) {
+      // HQL user class name and properties name instead of table name and column names
+      String hql =
+          "SELECT DISTINCT username FROM DBUser WHERE createdDate = :created_date ORDER BY username";
+      Query query = session.createQuery(hql);
+      // In HQL, it is ":created_date" whereas in setParameter, it is "created_date"
+      query.setParameter("created_date", date);
+      usernames = (List<String>) query.list();
+      for (String username : usernames) {
+        System.out.println(username);
+      }
+    } catch (HibernateException e) {
+      System.out.println("Failed to list users: " + e.getMessage());
+    }
+    return usernames;
   }
 }
