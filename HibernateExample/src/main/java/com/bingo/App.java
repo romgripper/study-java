@@ -2,15 +2,21 @@ package com.bingo;
 
 import java.util.Date;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 import com.bingo.dao.DBUserDAO;
 import com.bingo.dao.impl.DBUserDAOImpl;
+import com.bingo.stock.Stock;
+import com.bingo.stock.StockDetail;
 import com.bingo.user.DBUser;
 import com.bingo.util.HibernateUtil;
 
 public class App {
-  public static void main(String[] args) {
-    System.out.println("Maven + Hibernate + MySQL");
-    DBUserDAO dao = new DBUserDAOImpl(HibernateUtil.getSessionFactory());
+
+  private static void testDBUser(SessionFactory factory) {
+    DBUserDAO dao = new DBUserDAOImpl(factory);
 
     DBUser user = new DBUser(null, "superman", "system", new Date());
     dao.insertUser(user);
@@ -66,6 +72,43 @@ public class App {
       e.printStackTrace();
       System.out.println(e.getMessage());
     }*/
+  }
+
+  private static void testStock(SessionFactory factory) {
+    System.out.println("Hibernate one to one (Annotation)");
+
+    try (Session session = factory.openSession()) {
+      session.beginTransaction();
+
+      Stock stock = new Stock();
+      stock.setStockCode("7052");
+      stock.setStockName("PADINI");
+
+      StockDetail stockDetail = new StockDetail();
+      stockDetail.setCompName("PADINI Holding Malaysia");
+      stockDetail.setCompDesc("one stop shopping");
+      stockDetail.setRemark("vinci vinci");
+      stockDetail.setListedDate(new Date());
+
+      stock.setStockDetail(stockDetail);
+      stockDetail.setStock(stock); // This line cannot be omitted
+
+      session.save(stock);
+      session.getTransaction().commit();
+
+      System.out.println(stock);
+    } catch (HibernateException e) {
+      e.printStackTrace();
+    }
+    System.out.println("Done");
+  }
+
+  public static void main(String[] args) {
+    System.out.println("Maven + Hibernate + MySQL");
+    SessionFactory factory = HibernateUtil.getSessionFactory();
+    testDBUser(factory);
+    testStock(factory);
+
     HibernateUtil.shutdown();
   }
 }
