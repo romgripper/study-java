@@ -1,4 +1,6 @@
-
+/*
+ * The first part of the array is in ASC order while the second part is in DESC order
+ */
 public class Find {
 	
 	private static int findInc(int[] a, int val, int start, int end) {

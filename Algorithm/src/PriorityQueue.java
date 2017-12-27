@@ -1,26 +1,36 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class PriorityQueue {
 	private static final int INIT_CAPICITY = 8;
-	private int[] array = new int[INIT_CAPICITY];
+	private int[] array;
 	private int size = 0;
-	private int capicity = INIT_CAPICITY;
+	private int capicity;
 	
 	public PriorityQueue() {
+		this(INIT_CAPICITY);
 	}
 	
 	public PriorityQueue(int capicity) {
 		this.capicity = capicity;
+		array = new int[capicity];
+	}
+	
+	public PriorityQueue(int[] initArray) {
+		capicity = size = initArray.length;
+		array = Arrays.copyOf(initArray, size);
+		buildHeap();
 	}
 	
 	private void enlargeCapicity() {
-		capicity <<= 2;
-		int[] newArray = new int[capicity];
+		capicity <<= 1;
+		System.out.println("Enlarge capacity to " + capicity);
+		/*int[] newArray = new int[capicity];
 		for (int i = 0; i < size; i ++) {
 			newArray[i] = array[i]; 
 		}
-		array = newArray;
-		//array = Arrays.copyOf(array, capicity);
+		array = newArray;*/
+		array = Arrays.copyOf(array, capicity);
 	}
 	
 	public void enqueue(int value) {
@@ -45,7 +55,7 @@ public class PriorityQueue {
 		if (value != null) {
 			size --;
 			swap(0, size);
-			heapifyDown(0, size);
+			heapifyDown(0);
 		}
 		return value;
 	}
@@ -53,6 +63,7 @@ public class PriorityQueue {
 	private int parent(int i) {
 		return (i - 1) / 2;
 	}
+	
 	private void heapifyUp(int i) {
 		if (i == 0) {
 			return;
@@ -66,7 +77,7 @@ public class PriorityQueue {
 	
 	private void buildHeap() {
 		for (int i = parent(size - 1); i >= 0; i --) {
-			heapifyDown(i, size);
+			heapifyDown(i);
 		}
 	}
 	
@@ -84,6 +95,10 @@ public class PriorityQueue {
 			swap(max, i);
 			heapifyDown(max, n);
 		}
+	}
+	
+	private void heapifyDown(int i) {
+		heapifyDown(i, size);
 	}
 	
 	public void sort() {
@@ -114,16 +129,14 @@ public class PriorityQueue {
 		System.out.println();
 	}	
 	
-	private static int readSize(Scanner scanner) {
-		return Integer.parseInt(scanner.nextLine());
-	}
-
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-		int n = readSize(scanner);
+		int a[] = { 2, 4, 6, 10, 8, 9, 5, 7, 1, 3};
+		
+		// Test 1
+		System.out.println("Test 1");
 		PriorityQueue pq = new PriorityQueue();
-		for (int i = 0; i < n; i ++) {
-			pq.enqueue(scanner.nextInt());
+		for (int i = 0; i < a.length; i ++) {
+			pq.enqueue(a[i]);
 			pq.print();
 		}
 		//pq.print();
@@ -131,6 +144,24 @@ public class PriorityQueue {
 		while ((cur = pq.dequeue()) != null) {
 			System.out.println(cur);
 		}
-		scanner.close();
+		
+		// Test 2
+		System.out.println("Test 2");
+		pq = new PriorityQueue(a.length);
+		for (int i = 0; i < a.length; i ++) {
+			pq.enqueue(a[i]);
+			pq.print();
+		}
+		//pq.print();
+		while ((cur = pq.dequeue()) != null) {
+			System.out.println(cur);
+		}
+		
+		// Test 3
+		System.out.println("Test 3");
+		pq = new PriorityQueue(a);
+		pq.print();
+		pq.sort();
+		pq.print();
 	}
 }
