@@ -12,9 +12,10 @@
         <property name="hibernate.connection.pool_size">10</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <!-- Whether to print SQLs that hibernate uses -->
-        <property name="show_sql">false</property>
+        <property name="show_sql">true</property>
         <mapping class="com.bingo.user.DBUser"/>
         <mapping class="com.bingo.stock.Stock"/>
         <mapping class="com.bingo.stock.StockDetail"/>
+        <mapping class="com.bingo.stock.StockDailyRecord"/>
     </session-factory>
 </hibernate-configuration>

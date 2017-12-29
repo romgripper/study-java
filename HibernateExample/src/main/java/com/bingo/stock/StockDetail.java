@@ -103,4 +103,9 @@ public class StockDetail {
   public void setListedDate(Date listedDate) {
     this.listedDate = listedDate;
   }
+
+  @Override
+  public String toString() {
+    return "StockDetail [" + compName + ", " + compDesc + ", " + remark + ", " + listedDate + "]";
+  }
 }
