@@ -34,6 +34,10 @@ public class Stock implements Serializable {
   private String code;
   private String name;
   private StockDetail detail;
+
+  /* The actual interface might be java.util.Set, java.util.Collection, java.util.List,
+   * java.util.Map, java.util.SortedSet, java.util.SortedMap
+   */
   private Set<StockDailyRecord> records = new HashSet<>();
 
   public Stock() {}
