@@ -29,8 +29,10 @@ public class App {
       stockDetail.setRemark("vinci vinci");
       stockDetail.setListedDate(new Date());
 
+      // If the following line is omitted, no stock detail is inserted into DB.
       stock.setDetail(stockDetail);
-      stockDetail.setStock(stock); // This line cannot be omitted
+      // If the following line is ommited, "attempted to assign id from null one-to-one property" is reported
+      stockDetail.setStock(stock);
 
       StockDailyRecord stockDailyRecord = new StockDailyRecord();
       stockDailyRecord.setPriceOpen(new Float("1.2"));
@@ -40,7 +42,11 @@ public class App {
       Date today = new Date();
       stockDailyRecord.setDate(today);
 
+      /* If the following line is omitted, "not-null property references a null or transient value :
+       * com.bingo.stock.StockDailyRecord.stock" is reported
+       */
       stockDailyRecord.setStock(stock);
+      // If the following line is omitted, the record is not inserted into DB.
       stock.getRecords().add(stockDailyRecord);
 
       stockDailyRecord = new StockDailyRecord();
@@ -52,9 +58,17 @@ public class App {
       Date tomorrow = new Date(today.getTime() + timeadj);
       stockDailyRecord.setDate(tomorrow);
 
+      /* If the following line is omitted, "not-null property references a null or transient value :
+       * com.bingo.stock.StockDailyRecord.stock" is reported
+       */
       stockDailyRecord.setStock(stock);
       stock.getRecords().add(stockDailyRecord);
 
+      /* When a Stock is inserted, the associated StockDetail is inserted, whose ID (STOCK_ID) is derived from Stock,
+       * and the associated StockDailyRecord(s) are inserted, whose "STOCK_ID" column is derived from Stock.
+       * So if either stock is not set for StockDetail or StockDailyRecord, error is reported as the STOCK_ID columns
+       * of both tables cannot be null.
+       */
       session.save(stock);
       session.getTransaction().commit();
 

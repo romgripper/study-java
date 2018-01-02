@@ -5,4 +5,6 @@
   <table-filter match-catalog="test" match-name="stock"/>
   <table-filter match-catalog="test" match-name="stock_daily_record"/>
   <table-filter match-catalog="test" match-name="stock_detail"/>
+  <table-filter match-catalog="test" match-name="stock_category"/>
+  <table-filter match-catalog="test" match-name="category"/>
 </hibernate-reverse-engineering>
