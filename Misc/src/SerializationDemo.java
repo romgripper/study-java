@@ -1,89 +1,82 @@
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 public class SerializationDemo {
 
-	public static void main(String args[]) {
+  public static void main(String args[]) {
 
-		// Object serialization
+    // Object serialization
 
-		try {
+    try {
 
-			MyClass object1 = new MyClass("Hello", -7, 2.7e10);
+      MyClass object1 = new MyClass("Hello", -7, 2.7e10);
 
-			System.out.println("object1:" + object1);
+      System.out.println("object1:" + object1);
 
-			FileOutputStream fos = new FileOutputStream("serial");
+      FileOutputStream fos = new FileOutputStream("serial");
 
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
+      ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-			oos.writeObject(object1);
+      oos.writeObject(object1);
 
-			oos.flush();
+      oos.flush();
 
-			oos.close();
+      oos.close();
 
-		}
+    } catch (Exception e) {
 
-		catch (Exception e) {
+      System.out.println("Exception during serialization:" + e);
 
-			System.out.println("Exception during serialization:" + e);
+      System.exit(0);
+    }
 
-			System.exit(0);
+    // Object deserialization
 
-		}
+    try {
 
-		// Object deserialization
+      MyClass object2;
 
-		try {
+      FileInputStream fis = new FileInputStream("serial");
 
-			MyClass object2;
+      ObjectInputStream ois = new ObjectInputStream(fis);
 
-			FileInputStream fis = new FileInputStream("serial");
+      object2 = (MyClass) ois.readObject();
 
-			ObjectInputStream ois = new ObjectInputStream(fis);
+      ois.close();
 
-			object2 = (MyClass) ois.readObject();
+      System.out.println("object2:" + object2);
 
-			ois.close();
+    } catch (Exception e) {
 
-			System.out.println("object2:" + object2);
+      System.out.println("Exception during deserialization:" + e);
 
-		}
-
-		catch (Exception e) {
-
-			System.out.println("Exception during deserialization:" + e);
-
-			System.exit(0);
-
-		}
-
-	}
-
+      System.exit(0);
+    }
+  }
 }
 
 class MyClass implements Serializable {
 
-	String s = "abc";
+  String s = "abc";
 
-	int i = 10;
+  int i = 10;
 
-	double d = 1.1;
+  transient double d = 1.1;
 
-	public MyClass(String s, int i, double d) {
+  public MyClass(String s, int i, double d) {
 
-		this.s = s;
+    this.s = s;
 
-		this.i = i;
+    this.i = i;
 
-		this.d = d;
+    this.d = d;
+  }
 
-	}
+  public String toString() {
 
-	public String toString() {
-
-		return "s=" + s + ";i=" + i + ";d=" + d;
-
-	}
-
+    return "s=" + s + ";i=" + i + ";d=" + d;
+  }
 }
