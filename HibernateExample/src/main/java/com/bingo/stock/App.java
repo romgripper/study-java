@@ -3,8 +3,8 @@ package com.bingo.stock;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -72,24 +72,22 @@ public class App {
       session.save(stock);
       session.getTransaction().commit();
 
-      List<Stock> stocks = session.createCriteria(Stock.class).list();
+      Criteria critera = session.createCriteria(Stock.class);
+      List<Stock> stocks = critera.list();
       System.out.println("Stocks:");
       for (Stock s : stocks) {
         System.out.println(s);
-        Set<StockDailyRecord> records = s.getRecords();
-        if (!records.isEmpty()) {
-          System.out.println("  Records:");
-          for (StockDailyRecord r : records) {
-            System.out.println("    " + r);
-          }
-        }
       }
-
-      System.out.println(stock);
+      critera.setMaxResults(5);
+      critera.setFirstResult(5);
+      stocks = critera.list();
+      System.out.println("Stocks skip 5 limit 5:");
+      for (Stock s : stocks) {
+        System.out.println(s);
+      }
     } catch (HibernateException e) {
       e.printStackTrace();
     }
-    System.out.println("Done");
   }
 
   public static void main(String[] args) {

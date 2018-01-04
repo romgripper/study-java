@@ -113,6 +113,11 @@ public class Stock implements Serializable {
 
   @Override
   public String toString() {
-    return "Stock [" + id + ", " + code + ", " + name + ", " + detail + "]";
+    String s = "Stock [" + id + ", " + code + ", " + name + ", " + detail + "]";
+
+    for (StockDailyRecord r : records) {
+      s += "\n  " + r;
+    }
+    return s;
   }
 }
