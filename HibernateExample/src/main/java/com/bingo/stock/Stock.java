@@ -11,6 +11,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -34,6 +37,7 @@ public class Stock implements Serializable {
   private String code;
   private String name;
   private StockDetail detail;
+  private Set<Category> categories = new HashSet<>();
 
   /* The actual interface might be java.util.Set, java.util.Collection, java.util.List,
    * java.util.Map, java.util.SortedSet, java.util.SortedMap
@@ -54,6 +58,7 @@ public class Stock implements Serializable {
     this.detail = detail;
   }
 
+  // These annotations can only be defined on getters
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "STOCK_ID", unique = true, nullable = false)
@@ -111,13 +116,36 @@ public class Stock implements Serializable {
     this.records = records;
   }
 
+  /* For n:m mapping, @JoinTable can be defined at either side
+   * @JoinTable and mappedBy are defined at different sides
+   * The side with @JoinTable is the managing side of the relationship,
+   * therefore it will be responsible for updating the join table.
+   */
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinTable(
+    name = "stock_category",
+    joinColumns = {@JoinColumn(name = "STOCK_ID", nullable = false, updatable = false)},
+    inverseJoinColumns = {@JoinColumn(name = "CATEGORY_ID", nullable = false, updatable = false)}
+  )
+  public Set<Category> getCategories() {
+    return categories;
+  }
+
+  public void setCategories(Set<Category> categories) {
+    this.categories = categories;
+  }
+
   @Override
   public String toString() {
     String s = "Stock [" + id + ", " + code + ", " + name + ", " + detail + "]";
 
-    for (StockDailyRecord r : records) {
-      s += "\n  " + r;
+    for (StockDailyRecord rec : records) {
+      s += "\n  " + rec;
     }
+    for (Category cat : categories) {
+      s += "\n  " + cat;
+    }
+
     return s;
   }
 }

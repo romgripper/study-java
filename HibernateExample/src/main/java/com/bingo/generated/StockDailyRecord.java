@@ -1,5 +1,5 @@
 package com.bingo.generated;
-// Generated Jan 1, 2018 10:43:03 PM by Hibernate Tools 5.2.6.Final
+// Generated Jan 2, 2018 11:04:52 PM by Hibernate Tools 5.2.6.Final
 
 import static javax.persistence.GenerationType.IDENTITY;
 

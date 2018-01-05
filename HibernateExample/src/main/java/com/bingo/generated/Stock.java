@@ -1,5 +1,5 @@
 package com.bingo.generated;
-// Generated Jan 1, 2018 10:43:03 PM by Hibernate Tools 5.2.6.Final
+// Generated Jan 2, 2018 11:04:52 PM by Hibernate Tools 5.2.6.Final
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -11,6 +11,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -31,6 +34,7 @@ public class Stock implements java.io.Serializable {
   private Integer stockId;
   private String stockCode;
   private String stockName;
+  private Set categories = new HashSet(0);
   private Set stockDailyRecords = new HashSet(0);
   private StockDetail stockDetail;
 
@@ -41,9 +45,15 @@ public class Stock implements java.io.Serializable {
     this.stockName = stockName;
   }
 
-  public Stock(String stockCode, String stockName, Set stockDailyRecords, StockDetail stockDetail) {
+  public Stock(
+      String stockCode,
+      String stockName,
+      Set categories,
+      Set stockDailyRecords,
+      StockDetail stockDetail) {
     this.stockCode = stockCode;
     this.stockName = stockName;
+    this.categories = categories;
     this.stockDailyRecords = stockDailyRecords;
     this.stockDetail = stockDetail;
   }
@@ -75,6 +85,21 @@ public class Stock implements java.io.Serializable {
 
   public void setStockName(String stockName) {
     this.stockName = stockName;
+  }
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+    name = "stock_category",
+    catalog = "test",
+    joinColumns = {@JoinColumn(name = "STOCK_ID", nullable = false, updatable = false)},
+    inverseJoinColumns = {@JoinColumn(name = "CATEGORY_ID", nullable = false, updatable = false)}
+  )
+  public Set getCategories() {
+    return this.categories;
+  }
+
+  public void setCategories(Set categories) {
+    this.categories = categories;
   }
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock")

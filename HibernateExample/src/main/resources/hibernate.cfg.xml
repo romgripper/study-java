@@ -17,5 +17,6 @@
         <mapping class="com.bingo.stock.Stock"/>
         <mapping class="com.bingo.stock.StockDetail"/>
         <mapping class="com.bingo.stock.StockDailyRecord"/>
+        <mapping class="com.bingo.stock.Category"/>
     </session-factory>
 </hibernate-configuration>

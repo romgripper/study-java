@@ -3,6 +3,7 @@ package com.bingo.stock;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -31,7 +32,7 @@ public class App {
 
       // If the following line is omitted, no stock detail is inserted into DB.
       stock.setDetail(stockDetail);
-      // If the following line is ommited, "attempted to assign id from null one-to-one property" is reported
+      // If the following line is omitted, "attempted to assign id from null one-to-one property" is reported
       stockDetail.setStock(stock);
 
       StockDailyRecord stockDailyRecord = new StockDailyRecord();
@@ -64,6 +65,18 @@ public class App {
       stockDailyRecord.setStock(stock);
       stock.getRecords().add(stockDailyRecord);
 
+      Category category1 = new Category("CONSUMER", "CONSUMER COMPANY");
+      Category category2 = new Category("INVESTMENT", "INVESTMENT COMPANY");
+
+      Set<Category> categories = stock.getCategories();
+      categories.add(category1);
+      categories.add(category2);
+      /* The following line is not necessary as two sides of n:m mapping is not equivalent.
+       * Stock has @JoinTable, so Stock is responsible for managing the relationship,
+       * while Category is not.
+       * category1.getStocks().add(stock)
+       */
+
       /* When a Stock is inserted, the associated StockDetail is inserted, whose ID (STOCK_ID) is derived from Stock,
        * and the associated StockDailyRecord(s) are inserted, whose "STOCK_ID" column is derived from Stock.
        * So if either stock is not set for StockDetail or StockDailyRecord, error is reported as the STOCK_ID columns
@@ -72,6 +85,7 @@ public class App {
       session.save(stock);
       session.getTransaction().commit();
 
+      session.beginTransaction();
       Criteria critera = session.createCriteria(Stock.class);
       List<Stock> stocks = critera.list();
       System.out.println("Stocks:");
@@ -82,9 +96,15 @@ public class App {
       critera.setFirstResult(5);
       stocks = critera.list();
       System.out.println("Stocks skip 5 limit 5:");
+      Category category = new Category("CONS", "CONS COMP");
       for (Stock s : stocks) {
+        category.getStocks().add(s);
+        // The following line is necessary as Stock is the side managing the relationship
+        s.getCategories().add(category);
         System.out.println(s);
       }
+      session.save(category);
+      session.getTransaction().commit();
     } catch (HibernateException e) {
       e.printStackTrace();
     }
