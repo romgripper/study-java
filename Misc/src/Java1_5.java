@@ -54,14 +54,27 @@ public class Java1_5 {
     }
   }
 
+  private static void tryAnnotation() {
+    new Runnable() {
+      @Override
+      public void run() {
+        System.out.println("Run() is a @Override method");
+      }
+    }.run();
+  }
+
   public static void main(String[] args) {
     tryAutoBoxing();
     tryEnum();
     tryVarArgs(1, 2, 3, 4, 5, 6);
     tryGenericAndForEach();
+    tryAnnotation();
   }
 }
 
+/* This cannot be public because only one public class is allowed in one jave file and
+ * the name should be consistent with the class name.
+ */
 enum Weekday {
   Sunday(1),
   MONDAY(2),
