@@ -103,6 +103,8 @@ public class App {
         s.getCategories().add(category);
         System.out.println(s);
       }
+
+      // To save relationship, we just need to save category as long as the category is added to a stock. Why?
       session.save(category);
       session.getTransaction().commit();
     } catch (HibernateException e) {

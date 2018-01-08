@@ -2,9 +2,12 @@ import static java.lang.Math.PI;
 import static java.lang.Math.sqrt;
 import static java.lang.System.out;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Java1_5 {
 
-  public static void autoBoxing() {
+  public static void tryAutoBoxing() {
     Integer i = 10;
     Integer m = 10;
     System.out.println(i == m);
@@ -36,16 +39,26 @@ public class Java1_5 {
     out.println(sqrt(PI));
   }
 
-  private static void printVarArgs(int... a) {
+  private static void tryVarArgs(int... a) {
     for (int i : a) {
       System.out.println(i);
     }
   }
 
+  private static void tryGenericAndForEach() {
+    List<String> words = new ArrayList<String>();
+    words.add("Hello");
+    words.add("World");
+    for (String word : words) {
+      System.out.println(word);
+    }
+  }
+
   public static void main(String[] args) {
-    autoBoxing();
+    tryAutoBoxing();
     tryEnum();
-    printVarArgs(1, 2, 3, 4, 5, 6);
+    tryVarArgs(1, 2, 3, 4, 5, 6);
+    tryGenericAndForEach();
   }
 }
 
