@@ -118,9 +118,7 @@ public class Java1_8 {
         products
             .stream()
             .collect(Collectors.toMap(product -> product.name, product -> product.price));
-    for (Map.Entry<String, Float> product : productMap.entrySet()) {
-      System.out.println(product.getKey() + ": " + product.getValue());
-    }
+    productMap.forEach((k, v) -> System.out.println(k + ": " + v));
   }
 
   public static void main(String[] args) {
