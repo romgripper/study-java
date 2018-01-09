@@ -1,6 +1,9 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 interface Formula {
 
@@ -89,10 +92,54 @@ public class Java1_8 {
     System.out.println(factory.create("Mike", "Smith"));
   }
 
+  private static void tryStream() {
+    List<Product> products = new ArrayList<>();
+    products.add(new Product(1, "HP Laptop", 25000f));
+    products.add(new Product(2, "Dell Laptop", 30000f));
+    products.add(new Product(3, "Lenovo Laptop", 28000f));
+    products.add(new Product(4, "Sony Laptop", 28000f));
+    products.add(new Product(5, "Apple Laptop", 90000f));
+
+    List<Float> prices =
+        products
+            .stream()
+            .filter(p -> p.price > 25000)
+            .map(p -> p.price)
+            .collect(Collectors.toList());
+    System.out.println(prices);
+    products
+        .stream()
+        .filter(p -> p.price >= 25000)
+        .sorted((p1, p2) -> (int) ((p2.price - p1.price) * 100))
+        .limit(2)
+        .forEach(product -> System.out.println(product.name + ": " + product.price));
+
+    Map<String, Float> productMap =
+        products
+            .stream()
+            .collect(Collectors.toMap(product -> product.name, product -> product.price));
+    for (Map.Entry<String, Float> product : productMap.entrySet()) {
+      System.out.println(product.getKey() + ": " + product.getValue());
+    }
+  }
+
   public static void main(String[] args) {
     System.out.println("Java 1.8 new features:");
     tryDefaultInterfaceMethod();
     tryLambda();
     tryFunctionalInterface();
+    tryStream();
+  }
+}
+
+class Product {
+  int id;
+  String name;
+  float price;
+
+  public Product(int id, String name, float price) {
+    this.id = id;
+    this.name = name;
+    this.price = price;
   }
 }
