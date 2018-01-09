@@ -8,6 +8,7 @@ import java.util.List;
 public class Java1_5 {
 
   public static void tryAutoBoxing() {
+    System.out.println("- Auto boxing & unboxing");
     Integer i = 10;
     Integer m = 10;
     System.out.println(i == m);
@@ -32,20 +33,24 @@ public class Java1_5 {
   }
 
   public static void tryEnum() {
+    System.out.println("- Enumerator");
     System.out.println(Weekday.Wednesday + "'s order in weekday is " + Weekday.Wednesday.index());
   }
 
   public static void tryStaticImport() {
+    System.out.println("- Static import");
     out.println(sqrt(PI));
   }
 
   private static void tryVarArgs(int... a) {
+    System.out.println("- Varargs");
     for (int i : a) {
       System.out.println(i);
     }
   }
 
   private static void tryGenericAndForEach() {
+    System.out.println("- Generic & For each");
     List<String> words = new ArrayList<String>();
     words.add("Hello");
     words.add("World");
@@ -55,6 +60,7 @@ public class Java1_5 {
   }
 
   private static void tryAnnotation() {
+    System.out.println("- Annotation");
     new Runnable() {
       @Override
       public void run() {
@@ -64,6 +70,7 @@ public class Java1_5 {
   }
 
   public static void main(String[] args) {
+    System.out.println("Java 1.5 new features:");
     tryAutoBoxing();
     tryEnum();
     tryVarArgs(1, 2, 3, 4, 5, 6);

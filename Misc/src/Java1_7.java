@@ -4,6 +4,7 @@ import java.util.List;
 public class Java1_7 {
 
   private static void trySwitchString() {
+    System.out.println("- Switch string");
     // Switch(String) use String.equals(), so the following two lines have the same result.
     String key = "test";
     //String key = new String("test");
@@ -25,6 +26,7 @@ public class Java1_7 {
   }
 
   private static void tryAutoCloseable() {
+    System.out.println("- AutoCloseable");
     try (MyAutoCloseable autoClose = new MyAutoCloseable()) {
       throw new Exception();
     } catch (Exception e) {
@@ -38,6 +40,7 @@ public class Java1_7 {
   }
 
   private static void tryGeneric() {
+    System.out.println("- Simplified generic");
     List<String> list = new ArrayList<>();
     list.add("hello");
     list.add("world");
@@ -47,6 +50,7 @@ public class Java1_7 {
   }
 
   private static void tryNumbers() {
+    System.out.println("- Number Literature");
     System.out.println(1000_000_0);
     System.out.println(1000_000);
     System.out.println(0b0000_0001);
@@ -54,9 +58,11 @@ public class Java1_7 {
   }
 
   private static void tryMultipleCatch() {
+    System.out.println("- Multiple catch clauses");
     int b = 0, x[] = {10, 20, 30};
     try {
       int c = x[3] / b;
+      System.out.println(c);
     } catch (ArithmeticException e) {
       System.out.println(e);
     } catch (ArrayIndexOutOfBoundsException e) {
@@ -65,6 +71,7 @@ public class Java1_7 {
   }
 
   public static void main(String[] args) {
+    System.out.println("Java 1.7 new features:");
     trySwitchString();
     tryAutoCloseable();
     tryGeneric();
