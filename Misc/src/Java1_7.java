@@ -63,9 +63,7 @@ public class Java1_7 {
     try {
       int c = x[3] / b;
       System.out.println(c);
-    } catch (ArithmeticException e) {
-      System.out.println(e);
-    } catch (ArrayIndexOutOfBoundsException e) {
+    } catch (ArithmeticException | ArrayIndexOutOfBoundsException e) {
       System.out.println(e);
     }
   }
