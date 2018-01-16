@@ -12,6 +12,6 @@
 
 	<servlet-mapping>
 		<servlet-name>Hello Servlet</servlet-name>
-		<url-pattern>/hello/*</url-pattern>
+		<url-pattern>/hello</url-pattern>
 	</servlet-mapping>
 </web-app>
