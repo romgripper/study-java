@@ -20,9 +20,11 @@ public class HolisticCounter extends HttpServlet {
     PrintWriter out = res.getWriter();
     count++;
     out.println("Since loading, this servlet instance has been accessed " + count + " times.");
+
     totalCount++;
     out.println(
         "Across all instances, this servlet class has been accessed " + totalCount + " times.");
+
     instances.add(this);
     out.println("There are currently " + instances.size() + " instances.");
   }

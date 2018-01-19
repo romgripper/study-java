@@ -22,18 +22,29 @@
     <load-on-startup>0</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>Counter</servlet-name>
+    <servlet-class>com.bingo.helloworld.InitDestroyCounter</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>Hello Servlet</servlet-name>
     <url-pattern>/hello</url-pattern>
   </servlet-mapping>
 
+  <servlet-mapping>
+    <servlet-name>Counter</servlet-name>
+    <url-pattern>/counter</url-pattern>
+  </servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>Counter1</servlet-name>
-		<url-pattern>/count1</url-pattern>
+		<url-pattern>/counter1</url-pattern>
 	</servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>Counter2</servlet-name>
-    <url-pattern>/count2</url-pattern>
+    <url-pattern>/counter2</url-pattern>
   </servlet-mapping>
 </web-app>
