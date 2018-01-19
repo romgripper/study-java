@@ -10,8 +10,30 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
+	<servlet>
+    <servlet-name>Counter1</servlet-name>
+    <servlet-class>com.bingo.helloworld.HolisticCounter</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>Counter2</servlet-name>
+    <servlet-class>com.bingo.helloworld.HolisticCounter</servlet-class>
+    <load-on-startup>0</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Hello Servlet</servlet-name>
+    <url-pattern>/hello</url-pattern>
+  </servlet-mapping>
+
 	<servlet-mapping>
-		<servlet-name>Hello Servlet</servlet-name>
-		<url-pattern>/hello</url-pattern>
+		<servlet-name>Counter1</servlet-name>
+		<url-pattern>/count1</url-pattern>
 	</servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Counter2</servlet-name>
+    <url-pattern>/count2</url-pattern>
+  </servlet-mapping>
 </web-app>
