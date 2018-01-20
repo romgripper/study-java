@@ -32,13 +32,14 @@ public class InitDestroyCounter extends HttpServlet {
     }
   }
 
-  /* Right now you're probably asking yourself "What happens if the server crashes?"
-    It's a good question. The answer is that the destroy() method will not be called.
-    This doesn't cause a problem for destroy() methods that only have to free
-    resources; a rebooted server does that job just as well (if not better). But it does
-    cause a problem for a servlet that needs to save its state in its destroy() method.
-    For these servlets, the only guaranteed solution is to save state more often.
-  */
+  /*
+   * Right now you're probably asking yourself "What happens if the server crashes?"
+   * It's a good question. The answer is that the destroy() method will not be called.
+   * This doesn't cause a problem for destroy() methods that only have to free
+   * resources; a rebooted server does that job just as well (if not better). But it does
+   * cause a problem for a servlet that needs to save its state in its destroy() method.
+   * For these servlets, the only guaranteed solution is to save state more often.
+   */
   @Override
   public void destroy() {
     try (ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(COUNT_FILE))) {

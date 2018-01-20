@@ -17,6 +17,7 @@ public class PrimeSearcher extends HttpServlet {
   Thread searcher;
   volatile boolean searching;
 
+  @Override
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     startSearch();
@@ -46,9 +47,9 @@ public class PrimeSearcher extends HttpServlet {
       try {
         Thread.sleep(200);
       } catch (InterruptedException ignored) {
-
       }
     }
+    System.out.println("Searching stopped");
   }
 
   private static boolean isPrime(long candidate) {
@@ -61,10 +62,17 @@ public class PrimeSearcher extends HttpServlet {
     return true;
   }
 
+  /* Notice that the destroy() method stops the searcher thread. This is very important!
+   * If a servlet does not stop its background threads, they continue to run until
+   * the virtual machine exits. Even when a servlet is reloaded (either explicitly or
+   * because its class file changed), its threads won't be stopped.
+   */
+  @Override
   public void destroy() {
     stopSearch();
   }
 
+  @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res)
       throws ServletException, IOException {
     res.setContentType("text/plain");
@@ -75,5 +83,11 @@ public class PrimeSearcher extends HttpServlet {
       out.print("The last prime discovered was " + lastPrime);
       out.println(" at " + lastPrimeModified);
     }
+  }
+
+  @Override
+  protected long getLastModified(HttpServletRequest req) {
+    // Must round to seconds with "/1000 * 1000"
+    return lastPrimeModified.getTime() / 1000 * 1000;
   }
 }
