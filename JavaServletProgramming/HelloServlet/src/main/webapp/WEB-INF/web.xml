@@ -27,6 +27,12 @@
     <servlet-class>com.bingo.helloworld.InitDestroyCounter</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
+  
+  <servlet>
+    <servlet-name>Prime</servlet-name>
+    <servlet-class>com.bingo.helloworld.PrimeSearcher</servlet-class>
+    <load-on-startup>0</load-on-startup>
+  </servlet>
 
   <servlet-mapping>
     <servlet-name>Hello Servlet</servlet-name>
@@ -46,5 +52,10 @@
   <servlet-mapping>
     <servlet-name>Counter2</servlet-name>
     <url-pattern>/counter2</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Prime</servlet-name>
+    <url-pattern>/prime</url-pattern>
   </servlet-mapping>
 </web-app>
