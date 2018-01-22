@@ -54,6 +54,12 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
+  
+  <servlet>
+    <servlet-name>Authentication</servlet-name>
+    <servlet-class>com.bingo.helloworld.BasicAuthentication</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
 
   <servlet-mapping>
     <servlet-name>Hello Servlet</servlet-name>
@@ -83,5 +89,10 @@
   <servlet-mapping>
     <servlet-name>Snoop</servlet-name>
     <url-pattern>/snoop</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Authentication</servlet-name>
+    <url-pattern>/auth</url-pattern>
   </servlet-mapping>
 </web-app>
