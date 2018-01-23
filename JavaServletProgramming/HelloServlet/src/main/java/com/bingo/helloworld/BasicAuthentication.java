@@ -34,7 +34,7 @@ public class BasicAuthentication extends HttpServlet {
        * dialog will not show, and Authorization header will not be included in the request.
        */
       res.setHeader("WWW-Authenticate", "BASIC");
-      // Send the error code: 401 unauthozied
+      // Send the error code: 401 unauthorized
       res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       // Could offer to add him to the allowed user list
     } else {
