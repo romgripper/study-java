@@ -20,7 +20,9 @@ public class SessionTracker extends HttpServlet {
 
     HttpSession session = req.getSession(true);
     int c = 0;
-    synchronized (session) {
+    // It follows that for any two strings s and t, s.intern() == t.intern() is true if and
+    // only if s.equals(t) is true.
+    synchronized (session.getId().intern()) {
       Integer count = (Integer) session.getAttribute("count");
       if (count == null) {
         count = 0;
