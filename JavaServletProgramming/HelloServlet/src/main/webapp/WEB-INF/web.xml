@@ -73,6 +73,12 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>Session Tracker</servlet-name>
+    <servlet-class>com.bingo.helloworld.SessionTracker</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>Hello Servlet</servlet-name>
     <url-pattern>/hello</url-pattern>
@@ -116,5 +122,10 @@
   <servlet-mapping>
     <servlet-name>Client Pull</servlet-name>
     <url-pattern>/pull</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Session Tracker</servlet-name>
+    <url-pattern>/track</url-pattern>
   </servlet-mapping>
 </web-app>
