@@ -67,6 +67,12 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>Client Pull</servlet-name>
+    <servlet-class>com.bingo.helloworld.ClientPull</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>Hello Servlet</servlet-name>
     <url-pattern>/hello</url-pattern>
@@ -105,5 +111,10 @@
   <servlet-mapping>
     <servlet-name>Header Snoop</servlet-name>
     <url-pattern>/header</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Client Pull</servlet-name>
+    <url-pattern>/pull</url-pattern>
   </servlet-mapping>
 </web-app>

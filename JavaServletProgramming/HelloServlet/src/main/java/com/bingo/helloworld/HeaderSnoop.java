@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class HeaderSnoop extends HttpServlet {
+
   public void doGet(HttpServletRequest req, HttpServletResponse res)
       throws ServletException, IOException {
     res.setContentType("text/plain");
@@ -18,6 +19,13 @@ public class HeaderSnoop extends HttpServlet {
     out.println();
     Enumeration<String> headerNames = req.getHeaderNames();
     while (headerNames.hasMoreElements()) {
+      // The browser will not show the page until receiving all the bytes,
+      // So it waits for a long time, if sleep() here.
+      /*try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        System.out.println(e.getMessage());
+      }*/
       String name = headerNames.nextElement();
       String value = req.getHeader(name);
       if (value != null) {
