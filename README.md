@@ -1,1 +1,1 @@
-# This repo records the source codes during my Java study
+# This repo records the source codes during Bin's Java study
